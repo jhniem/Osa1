@@ -1,78 +1,74 @@
-import React from 'react'
+import React, { useState } from 'react'
 import ReactDOM from 'react-dom'
 
-const App = () => {
+
+const Statistics = (props) => {
   
-  const course = {
-    name: 'Half Stack -sovelluskehitys',
-    parts: [
-      {
-        name: 'Reactin perusteet',
-        exercises: 10
-      },
-      {
-        name: 'Tiedonvälitys propseilla',
-        exercises: 7
-      },
-      {
-        name: 'Komponenttien tila',
-        exercises: 14
-      }
-    ]
-  }
-
-
-  return (
-    <div>
-      <Header course={course.name} />
-      <Content parts={course.parts} />
-      <Total parts={course.parts} /> 
-    </div>
-  )
-}
-
-
-const Header = (props) => {
-  
-return (
-    <div>
-      <h1>{props.coursename}</h1>
-     </div>
-  )
-}
-
-const Content = (props) => {
-  
-
-  return (
-    <div>
-      <Part name={props.parts[0].name } exercises={props.parts[0].exercises} />
-      <Part name={props.parts[1].name} exercises={props.parts[1].exercises} />
-      <Part name={props.parts[2].name} exercises={props.parts[2].exercises} />
-    </div>
-  )
-}
-
-const Part = (props) => {
-  
-
+  if (props.sum > 0) {
   return (
     <>
-      <p>
-        {props.name} {props.exercises}
-      </p>
-      
+    <>
+    <h2>Statistiikkaa</h2>
+    <table>
+    <tr><Statistic name='Hyvä' value={props.good}></Statistic></tr>
+    <tr><Statistic name='Neutraali' value={props.neutral}></Statistic></tr>
+    <tr><Statistic name='Huono' value={props.bad}></Statistic></tr>
+    <tr><Statistic name='Yhteensa' value={props.sum}></Statistic></tr>
+    <tr><Statistic name='Keskiarvo' value={props.avg}></Statistic></tr>
+    <tr><Statistic name='Positiivisia' value={props.positive}></Statistic></tr>
+    </table>
     </>
-  )
+  </>
+  ) }
+return (
+  <>
+  <h2>Statistiikkaa</h2>
+  Ei yhtään palautetta annettu
+  </>
+)
 }
 
-const Total = (props) => {
+const Statistic = (props) => {
   
   return (
+    <>
+    <>
+    {props.name}: {props.value} <br></br>
+    </>
+  </>
+  ) }
+
+  
+const App = () => {
+  // tallenna napit omaan tilaansa
+  const [good, setGood] = useState(0)
+  const [neutral, setNeutral] = useState(0)
+  const [bad, setBad] = useState(0)
+  let reviews = [good, neutral , bad]
+  let sum = reviews.reduce((previous, current) => current += previous);
+  let sumvalues = (good*1 + bad*(-1))
+  let avg = sumvalues / sum;
+  let positive = (good / sum) * 100
+
+
+  return  (
     <div>
-      <p>yhteensä {props.parts[0].exercises + props.parts[1].exercises + props.parts[2].exercises} tehtävää</p>
+    <div>
+        <h2>Anna palautetta</h2>
+      <button onClick={() => setGood(good + 1)}>
+        Hyvä
+      </button>
+      <button onClick={() => setNeutral(neutral + 1)}>
+        Neutraali
+      </button>
+      <button onClick={() => setBad(bad + 1)}>
+        Huono
+      </button>
+      <Statistics good={good} neutral={neutral} bad={bad} sum={sum} avg={avg} positive={positive+'%'}></Statistics>
     </div>
+  </div>
   )
 }
-
-ReactDOM.render(<App />, document.getElementById('root'))
+ReactDOM.render(<App />, 
+  document.getElementById('root')
+)
